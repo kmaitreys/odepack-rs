@@ -13,8 +13,8 @@ fn main() {
     // Configure for different targets
     if target.contains("apple") {
         // macOS/iOS specific configuration
-        build.flag("-w");
         build.compiler("gfortran");
+        build.flag("-w");
         build.flag("-O3");
         build.flag("-std=legacy");
         build.flag("-fPIC");
@@ -31,7 +31,9 @@ fn main() {
     } else {
         // Linux and other Unix-like systems
         build.compiler("gfortran");
+        build.flag("-w");
         build.flag("-O3");
+        build.flag("-fPIC");
         build.flag("-std=legacy");
     }
 
