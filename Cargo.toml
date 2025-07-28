@@ -3,7 +3,7 @@ name = "lsode"
 version = "0.2.8"
 license = "MIT"
 authors = ["tungli <tun@mail.muni.cz>"]
-edition = "2018"
+edition = "2024"
 repository = "https://github.com/tungli/lsode-rust.git"
 description = "Solve systems of differntial equations using LSODE subroutine from ODEPACK written in Fortran."
 homepage = "https://github.com/tungli/lsode-rust.git"
@@ -17,7 +17,7 @@ documentation = "https://docs.rs/lsode/"
 
 [dependencies]
 libc = "0.2"
-libffi = "0.9"
+libffi = "4.1"
 
 [build-dependencies]
-cc = "1.0"
+cc = "1.2"
