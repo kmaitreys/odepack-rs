@@ -1,3 +1,7 @@
+//! IMPORTANT: Always run tests with `cargo test -- --test-threads=1` as ODEPACK solvers
+//! use `COMMON` blocks, making them non-re-entrant. That is to say, no two instances of the
+//! solver can be run at the same time.
+
 extern crate lsode;
 use libc::{c_double, c_int};
 use std::slice;
