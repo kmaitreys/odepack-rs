@@ -8,7 +8,11 @@ fn main() {
     // Try to compile with appropriate settings for the target
     let mut build = cc::Build::new();
 
-    build.file("src/odepack.f");
+    build.file("src/blkdta000.f"); // dependency routines
+    build.file("src/opkda1.f");
+    build.file("src/opkda2.f");
+    build.file("src/dlsodes.f"); // main solver
+    // build.file("src/odepack.f"); // remaining ODEPACK routines
 
     // Configure for different targets
     if target.contains("apple") {
@@ -18,7 +22,8 @@ fn main() {
         build.flag("-O3");
         build.flag("-std=legacy");
         build.flag("-fPIC");
-        // Remove the problematic -std=legacy flag
+        build.flag("-mcpu=apple-m3");
+        build.flag("-mtune=native");
 
         // Check if gfortran is available
         if std::process::Command::new("gfortran")
@@ -37,9 +42,9 @@ fn main() {
         build.flag("-std=legacy");
     }
 
-    build.compile("libodepack.a");
+    build.compile("libdlsodes.a");
 
-    println!("cargo:rustc-link-lib=static=odepack");
+    println!("cargo:rustc-link-lib=static=dlsodes");
 
     // Platform-specific library linking
     if target.contains("apple") {
@@ -57,7 +62,10 @@ fn main() {
         println!("cargo:rustc-link-lib=dylib=gfortran");
     }
 
-    println!("cargo:rerun-if-changed=src/odepack.f");
+    println!("cargo:rerun-if-changed=src/blkdta000.f");
+    println!("cargo:rerun-if-changed=src/opkda1.f");
+    println!("cargo:rerun-if-changed=src/opkda2.f");
+    println!("cargo:rerun-if-changed=src/dlsodes.f");
 }
 
 fn find_gfortran_lib_path() -> Option<String> {
@@ -67,13 +75,12 @@ fn find_gfortran_lib_path() -> Option<String> {
     if let Ok(output) = Command::new("gfortran")
         .args(["-print-file-name=libgfortran.dylib"])
         .output()
+        && output.status.success()
     {
-        if output.status.success() {
-            let path_full = String::from_utf8_lossy(&output.stdout);
-            let path_str = path_full.trim();
-            if let Some(parent) = std::path::Path::new(path_str).parent() {
-                return Some(parent.to_string_lossy().to_string());
-            }
+        let path_full = String::from_utf8_lossy(&output.stdout);
+        let path_str = path_full.trim();
+        if let Some(parent) = std::path::Path::new(path_str).parent() {
+            return Some(parent.to_string_lossy().to_string());
         }
     }
 

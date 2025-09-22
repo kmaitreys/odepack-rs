@@ -1,5 +1,5 @@
 [package]
-name = "lsode"
+name = "odepack"
 version = "0.2.8"
 license = "MIT"
 authors = ["tungli <tun@mail.muni.cz>"]

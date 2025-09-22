@@ -2,7 +2,7 @@
 //! use `COMMON` blocks, making them non-re-entrant. That is to say, no two instances of the
 //! solver can be run at the same time.
 
-extern crate lsode;
+extern crate odepack;
 use libc::{c_double, c_int};
 use std::slice;
 
@@ -46,7 +46,7 @@ fn direct_call_to_dlsode() {
     let mut iwork: [c_int; LIW as usize] = [0; LIW as usize];
 
     unsafe {
-        lsode::dlsode_(
+        odepack::dlsode_(
             rhs,
             &NEQ,
             y.as_mut_ptr(),
@@ -62,7 +62,7 @@ fn direct_call_to_dlsode() {
             &LRW,
             iwork.as_mut_ptr(),
             &LIW,
-            lsode::fake_jacobian,
+            odepack::fake_jacobian,
             &mf,
         )
     };

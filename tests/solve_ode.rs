@@ -2,7 +2,7 @@
 //! use `COMMON` blocks, making them non-re-entrant. That is to say, no two instances of the
 //! solver can be run at the same time.
 
-extern crate lsode;
+extern crate odepack;
 
 // To run tests, use --test-threads=1. Multiple threads cause trouble (reason is unknown to me).
 
@@ -27,7 +27,7 @@ fn stiff() {
     let atol = 1e-6;
     let rtol = 1e-8;
 
-    let sol = lsode::solve_ode(rhs_stiff, &y0, ts.clone(), atol, rtol);
+    let sol = odepack::solve_ode(rhs_stiff, &y0, ts.clone(), atol, rtol);
 
     for (analytical, calculated) in ts.iter().map(|x| solution_stiff(*x)).zip(sol) {
         assert!(
@@ -62,7 +62,7 @@ fn decay() {
     let atol = 1e-6;
     let rtol = 1e-8;
 
-    let sol = lsode::solve_ode(rhs_decay, &y0, ts.clone(), atol, rtol);
+    let sol = odepack::solve_ode(rhs_decay, &y0, ts.clone(), atol, rtol);
 
     println!("{sol:?}");
 
@@ -85,7 +85,7 @@ fn closure_rhs() {
         dy[0] = *t * y[0];
         dy
     };
-    let sol = lsode::solve_ode(f, &y0, ts, 1e-6, 1e-6);
+    let sol = odepack::solve_ode(f, &y0, ts, 1e-6, 1e-6);
 
     println!("{sol:?}");
     assert!(
